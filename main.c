@@ -28,8 +28,8 @@ void seeAllCompletedList();
 // QUEUE
 void initQueue(QUEUE* q);
 void putToPendingQueue(QUEUE* q, TASK* newTask);
-TASK* getFromPendingQueue();
-void seeAllPendingQueue();
+TASK* getFromPendingQueue(QUEUE* q);
+void seeAllPendingQueue(QUEUE* q);
 
 // STACK
 void pushToDraftStack(TASK* newTask);
@@ -65,7 +65,7 @@ int main() {
 
             case 3:
                 // COMPLETE FIRST PENDING TASK
-                TASK* firstTask = getFromPendingQueue();
+                TASK* firstTask = getFromPendingQueue(&pendingQueue);
                 if(firstTask != NULL) {
                     addToCompletedList(firstTask);
                 }
@@ -179,10 +179,23 @@ void putToPendingQueue(QUEUE* q, TASK* newTask) {
     printf("Task added into the pending queue!\n\n");
 }
 
-TASK* getFromPendingQueue() {
+TASK* getFromPendingQueue(QUEUE* q) {
+    int id;
     printf("Getting Task from Pending Queue\n");
-
-    // YOUR CODE HERE
+    printf("Write the task ID please: \n");
+    scanf("%d", &id);
+    
+    for(int i = q->inicio; i != (q->fim + 1) % MAX_SIZE; i = (i + 1) % MAX_SIZE){
+        TASK* task = q->items[i];
+        
+        if(task->id){
+            printf("Task %d found!\n", id);
+            return task;
+        }
+        
+        printf("The task ID was not found!");
+    }
+    
     return NULL; // Return NULL if Queue is empty
 }
 
@@ -191,7 +204,7 @@ void seeAllPendingQueue(QUEUE* q) {
     
     for(int i = q->inicio; i != (q->fim + 1) % MAX_SIZE; i = (i + 1) % MAX_SIZE){
         TASK* task = q->items[i];
-         printf("Task ID: %d, \nDescription: %s\n", task->id, task->description);
+        printf("Task ID: %d, \nDescription: %s\n", task->id, task->description);
     }
 }
 
