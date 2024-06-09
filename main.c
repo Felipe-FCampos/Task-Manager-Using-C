@@ -1,6 +1,18 @@
+/* 
+    Código base feito por:
+    David Trigre(TigreDoMexico).
+    
+    Código adicional montado por:
+    Felipe Campos e Beatriz Pena.
+    
+    Locais de consulta:
+    ChatGPT, Google e documentos com explicação de Fila, lista e pilha.
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #define MAX_DESCRIPTION_SIZE 100
 #define MAX_SIZE 10
 
@@ -53,8 +65,11 @@ void seeAllPendingQueue(QUEUE* q);
 // STACK
 void initStack(STACK* stack);
 void pushToDraftStack(STACK* stack, TASK* newTask);
-TASK* popFromDraftStack();
+TASK* popFromDraftStack(STACK* stack);
 void seeAllDraftStack(STACK* stack);
+
+// LOADING
+char loading();
 
 // MENU
 void displayMenu();
@@ -121,9 +136,9 @@ int main() {
 
             case 7:
                 // SET LAST DRAFT AS PENDING TASK
-                TASK* lastTask = popFromDraftStack();
-                if(task != NULL) {
-                    putToPendingQueue(&pendingQueue, task);
+                TASK* lastTask = popFromDraftStack(&draftStack);
+                if(lastTask != NULL) {
+                    putToPendingQueue(&pendingQueue, lastTask);
                 }
                 break;
 
@@ -283,15 +298,23 @@ void pushToDraftStack(STACK* stack, TASK* newTask) {
     stack->top = newNo;
     
     printf("Task ID %d pushed to stack.\n", newTask->id);
-
-    // YOUR CODE HERE
 }
 
-TASK* popFromDraftStack() {
-    printf("Popping Task to Draft Stack");
-
-    // YOUR CODE HERE
+TASK* popFromDraftStack(STACK* stack) {
+    if (stack->top == NULL) {
+    printf("Stack is empty.\n");
     return NULL; // Return NULL if Stack is empty
+    }
+    
+    printf("Popping Task to Draft Stack");
+    stackNo* temp = stack->top;
+    stack->top = stack->top->next;
+    
+    TASK* removedTask = temp->task;
+    free(temp);
+    
+    printf("Task ID %d popped from stack.\n", removedTask->id);
+    return removedTask;
 }
 
 void seeAllDraftStack(STACK* stack) {
